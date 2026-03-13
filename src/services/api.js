@@ -7,6 +7,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,  // ✅ ही line add करा - JSESSIONID cookie साठी
   timeout: 10000, // 10 seconds timeout
 });
 
@@ -39,7 +40,8 @@ api.interceptors.response.use(
     }
     
     if (error.response?.status === 500) {
-      return Promise.reject({ message: 'सर्व्हर त्रुटी. कृपया नंतर प्रयत्न करा.' });
+      console.error('Server Error Details:', error.response.data);
+      return Promise.reject({ message: `सर्व्हर त्रुटी: ${error.response.data?.message || 'अज्ञात त्रुटी'}. कृपया नंतर प्रयत्न करा.` });
     }
     
     return Promise.reject(error.response?.data || { message: 'काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.' });
